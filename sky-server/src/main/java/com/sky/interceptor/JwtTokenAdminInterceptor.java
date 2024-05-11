@@ -38,7 +38,7 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        //1、从请求头中获取令牌
+        //1、从请求头中获取令牌，由前端每次发送请求时令请求头携带令牌
         String token = request.getHeader(jwtProperties.getAdminTokenName());
 
         //2、校验令牌
