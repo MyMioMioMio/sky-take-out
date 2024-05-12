@@ -46,5 +46,5 @@ mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.sky.entity
   configuration:
-    #开启驼峰命名
+    #开启驼峰命名,可以自动对应
     map-underscore-to-camel-case: true
