@@ -103,4 +103,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         IPage<Employee> employeeIPage = employeeMapper.selectPage(page, queryWrapper);
         return new PageResult(employeeIPage.getTotal(), employeeIPage.getRecords());
     }
+
+    @Override
+    public void changeStatus(Integer status, Long id) {
+        //封装数据
+        Employee employee = Employee.builder()
+                .id(id)
+                .status(status)
+                .build();
+        //更新数据
+        employeeMapper.updateById(employee);
+    }
 }
