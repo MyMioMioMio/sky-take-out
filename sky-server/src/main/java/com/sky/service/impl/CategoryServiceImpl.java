@@ -67,11 +67,11 @@ public class CategoryServiceImpl implements CategoryService {
         //封装数据
         Category category = new Category();
         BeanUtils.copyProperties(categoryDTO, category);
-        //设置创建人，创建日期，最后修改日期，最后修改人
-        category.setCreateUser(BaseContext.getCurrentId());
-        category.setCreateTime(LocalDateTime.now());
-        category.setUpdateTime(LocalDateTime.now());
-        category.setUpdateUser(BaseContext.getCurrentId());
+//        //设置创建人，创建日期，最后修改日期，最后修改人
+//        category.setCreateUser(BaseContext.getCurrentId());
+//        category.setCreateTime(LocalDateTime.now());
+//        category.setUpdateTime(LocalDateTime.now());
+//        category.setUpdateUser(BaseContext.getCurrentId());
         //保存
         categoryMapper.insert(category);
     }
@@ -81,9 +81,9 @@ public class CategoryServiceImpl implements CategoryService {
         //封装数据
         Category category = new Category();
         BeanUtils.copyProperties(categoryDTO, category);
-        //设置修改日期和最后修改人
-        category.setUpdateUser(BaseContext.getCurrentId());
-        category.setUpdateTime(LocalDateTime.now());
+//        //设置修改日期和最后修改人
+//        category.setUpdateUser(BaseContext.getCurrentId());
+//        category.setUpdateTime(LocalDateTime.now());
         //修改
         categoryMapper.updateById(category);
     }

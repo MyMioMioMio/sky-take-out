@@ -10,9 +10,11 @@ import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
+import com.sky.dto.PasswordEditDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
+import com.sky.exception.PasswordEditFailedException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
@@ -76,15 +78,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()).toUpperCase());
         //设置账号状态
         employee.setStatus(StatusConstant.ENABLE);
-        //设置创建日期
-        employee.setCreateTime(LocalDateTime.now());
-        //设置最后修改日期
-        employee.setUpdateTime(LocalDateTime.now());
-        // 动态从threadlocal中获取创建人和修改人id
-        //设置创建人id
-        employee.setCreateUser(BaseContext.getCurrentId());
-        //设置最后修改人id
-        employee.setUpdateUser(BaseContext.getCurrentId());
+//        //设置创建日期
+//        employee.setCreateTime(LocalDateTime.now());
+//        //设置最后修改日期
+//        employee.setUpdateTime(LocalDateTime.now());
+//        // 动态从threadlocal中获取创建人和修改人id
+//        //设置创建人id
+//        employee.setCreateUser(BaseContext.getCurrentId());
+//        //设置最后修改人id
+//        employee.setUpdateUser(BaseContext.getCurrentId());
 
         // 调用mapper添加员工
         employeeMapper.insert(employee);
@@ -128,10 +130,25 @@ public class EmployeeServiceImpl implements EmployeeService {
         //封装数据为employee
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeDTO, employee);
-        //刷新最后修改员工和最后修改日期
-        employee.setUpdateUser(BaseContext.getCurrentId());
-        employee.setUpdateTime(LocalDateTime.now());
+//        //刷新最后修改员工和最后修改日期
+//        employee.setUpdateUser(BaseContext.getCurrentId());
+//        employee.setUpdateTime(LocalDateTime.now());
         //更新数据
+        employeeMapper.updateById(employee);
+    }
+
+    @Override
+    public void editPassword(PasswordEditDTO passwordEditDTO) {
+        //获取用户
+        Employee employee = employeeMapper.selectById(passwordEditDTO.getEmpId());
+        //md5加密并密码校验
+        String oldPass = DigestUtils.md5DigestAsHex(passwordEditDTO.getOldPassword().getBytes()).toUpperCase();
+        if (!oldPass.equals(employee.getPassword())) {
+            //密码错误
+            throw new PasswordEditFailedException(MessageConstant.PASSWORD_ERROR);
+        }
+        //更改新密码
+        employee.setPassword(DigestUtils.md5DigestAsHex(passwordEditDTO.getNewPassword().getBytes()).toUpperCase());
         employeeMapper.updateById(employee);
     }
 }

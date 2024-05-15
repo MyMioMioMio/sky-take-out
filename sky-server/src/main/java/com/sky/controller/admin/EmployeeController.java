@@ -151,6 +151,7 @@ public class EmployeeController {
 
     /**
      * 修改密码
+     * 前端所给数据有问题，缺少必要关键字empid
      * @param passwordEditDTO
      * @return
      */
@@ -158,6 +159,7 @@ public class EmployeeController {
     @ApiOperation("修改密码")
     public Result editPassword(@RequestBody PasswordEditDTO passwordEditDTO) {
         log.info("修改密码:{}", passwordEditDTO);
-        return null;
+        employeeService.editPassword(passwordEditDTO);
+        return Result.success();
     }
 }
