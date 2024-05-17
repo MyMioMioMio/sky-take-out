@@ -20,4 +20,11 @@ public interface DishService {
      * @return
      */
     PageResult getPage(DishPageQueryDTO dishPageQueryDTO);
+
+    /**
+     * 菜品起售、停售
+     * @param status
+     * @param id
+     */
+    void changStatus(Integer status, Long id);
 }

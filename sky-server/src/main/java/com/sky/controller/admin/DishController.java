@@ -45,10 +45,16 @@ public class DishController {
         return Result.success(pageResult);
     }
 
-//    @PostMapping("/status/{status}")
-//
-//    public Result changStatus() {
-//
-//    }
+    /**
+     * 菜品起售、停售
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("菜品起售、停售")
+    public Result changStatus(@PathVariable("status") Integer status, Long id) {
+        log.info("菜品起售、停售:{},{}", status, id);
+        dishService.changStatus(status, id);
+        return Result.success();
+    }
 }
 

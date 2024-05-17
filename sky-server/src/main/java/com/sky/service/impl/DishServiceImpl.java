@@ -64,4 +64,15 @@ public class DishServiceImpl implements DishService {
         dishMapper.selectPage(page, wrapper);
         return new PageResult(page.getTotal(), page.getRecords());
     }
+
+    @Override
+    public void changStatus(Integer status, Long id) {
+        //封装数据
+        Dish dish = Dish.builder()
+                .id(id)
+                .status(status)
+                .build();
+        //更新
+        dishMapper.updateById(dish);
+    }
 }
