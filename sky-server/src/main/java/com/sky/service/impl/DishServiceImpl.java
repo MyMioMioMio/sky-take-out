@@ -11,6 +11,7 @@ import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
 import com.sky.result.PageResult;
 import com.sky.service.DishService;
+import com.sky.vo.DishVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,19 +50,9 @@ public class DishServiceImpl implements DishService {
     @Override
     public PageResult getPage(DishPageQueryDTO dishPageQueryDTO) {
         //封装分页信息
-        IPage<Dish> page = new Page<>(dishPageQueryDTO.getPage(), dishPageQueryDTO.getPageSize());
-        //拆分条件
-        String name = dishPageQueryDTO.getName();
-        Integer categoryId = dishPageQueryDTO.getCategoryId();
-        Integer status = dishPageQueryDTO.getStatus();
-        //设置查询条件
-        LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(categoryId != null, Dish::getCategoryId, categoryId)
-                .eq(status != null, Dish::getStatus, status)
-                .like(name != null && !name.isEmpty(), Dish::getName, name)
-                .orderByDesc(Dish::getCreateTime);
+        IPage<DishVO> page = new Page<>(dishPageQueryDTO.getPage(), dishPageQueryDTO.getPageSize());
         //分页查询
-        dishMapper.selectPage(page, wrapper);
+        dishMapper.selectVoPage(page, dishPageQueryDTO);
         return new PageResult(page.getTotal(), page.getRecords());
     }
 
