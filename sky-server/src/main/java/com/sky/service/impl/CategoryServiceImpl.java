@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -102,5 +103,14 @@ public class CategoryServiceImpl implements CategoryService {
         }
         //删除分类
         categoryMapper.deleteById(id);
+    }
+
+    @Override
+    public List<Category> selectList(Integer type) {
+        //封装条件
+        LambdaQueryWrapper<Category> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Category::getType, type);
+        //查询
+        return categoryMapper.selectList(wrapper);
     }
 }
