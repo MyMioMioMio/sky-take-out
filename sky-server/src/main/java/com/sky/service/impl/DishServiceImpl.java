@@ -7,10 +7,12 @@ import com.sky.constant.MessageConstant;
 import com.sky.constant.StatusConstant;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
+import com.sky.entity.Category;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
 import com.sky.entity.SetmealDish;
 import com.sky.exception.DeletionNotAllowedException;
+import com.sky.mapper.CategoryMapper;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
@@ -35,6 +37,9 @@ public class DishServiceImpl implements DishService {
     @Autowired
     private SetmealDishMapper setmealDishMapper;
 
+    @Autowired
+    private CategoryMapper categoryMapper;
+
     @Override
     public void addDish(DishDTO dishDTO) {
         //封装菜品数据
@@ -52,7 +57,6 @@ public class DishServiceImpl implements DishService {
             //保存口味
             dishFlavorMapper.insertAll(flavors);
         }
-
     }
 
     @Override
@@ -97,5 +101,41 @@ public class DishServiceImpl implements DishService {
         LambdaQueryWrapper<DishFlavor> wrapper = new LambdaQueryWrapper<>();
         wrapper.in(DishFlavor::getDishId, ids);
         dishFlavorMapper.delete(wrapper);
+    }
+
+    @Override
+    public DishVO getDishVOById(Long id) {
+        //查询dish
+        Dish dish = dishMapper.selectById(id);
+        //根据categoryId查询分类
+        Category category = categoryMapper.selectById(dish.getCategoryId());
+        //根据dishId查询口味
+        List<DishFlavor> dishFlavors = dishFlavorMapper.selectList(new LambdaQueryWrapper<DishFlavor>().eq(DishFlavor::getDishId, id));
+        //封装数据
+        DishVO dishVO = new DishVO();
+        BeanUtils.copyProperties(dish, dishVO);
+        dishVO.setCategoryName(category.getName());
+        dishVO.setFlavors(dishFlavors);
+        return dishVO;
+    }
+
+    @Override
+    public void updateDish(DishDTO dishDTO) {
+        //拆分数据为dish和flavors
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO, dish);
+        //更新菜品
+        dishMapper.updateById(dish);
+        //删除原有口味
+        dishFlavorMapper.delete(new LambdaQueryWrapper<DishFlavor>().eq(DishFlavor::getDishId, dish.getId()));
+        //提取口味数据
+        List<DishFlavor> flavors = dishDTO.getFlavors();
+        //判断是否有口味
+        if (flavors != null && !flavors.isEmpty()) {
+            //遍历给dishId赋值
+            flavors.forEach(flavor -> flavor.setDishId(dish.getId()));
+            //保存口味
+            dishFlavorMapper.insertAll(flavors);
+        }
     }
 }
