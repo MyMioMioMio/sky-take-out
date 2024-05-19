@@ -78,8 +78,8 @@ public class DishServiceImpl implements DishService {
     @Override
     public void delete(List<Long> ids) {
         //判断是否存在启售中的菜品
-        ids.forEach(id -> {
-            Dish dish = dishMapper.selectById(id);
+        List<Dish> dishes = dishMapper.selectBatchIds(ids);
+        dishes.forEach(dish -> {
             if (dish.getStatus().intValue() == StatusConstant.ENABLE) {
                 throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
             }
