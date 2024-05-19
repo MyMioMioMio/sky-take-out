@@ -14,7 +14,7 @@
             <if test="dishPageQueryDTO.status != null">
                 and dish.status = #{dishPageQueryDTO.status}
             </if>
-            <if test="dishPageQueryDTO.name != null">
+            <if test="dishPageQueryDTO.categoryId != null">
                 and dish.category_id = #{dishPageQueryDTO.categoryId}
             </if>
         </where>
