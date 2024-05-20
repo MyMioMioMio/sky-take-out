@@ -138,4 +138,10 @@ public class DishServiceImpl implements DishService {
             dishFlavorMapper.insertAll(flavors);
         }
     }
+
+    @Override
+    public List<Dish> getByCategoryId(Long categoryId) {
+        //查询
+        return dishMapper.selectList(new LambdaQueryWrapper<Dish>().eq(Dish::getCategoryId, categoryId));
+    }
 }
