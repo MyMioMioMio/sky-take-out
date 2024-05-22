@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sky.constant.MessageConstant;
-import com.sky.context.BaseContext;
+import com.sky.constant.StatusConstant;
 import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
@@ -13,14 +13,13 @@ import com.sky.entity.Setmeal;
 import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.CategoryMapper;
 import com.sky.mapper.DishMapper;
-import com.sky.mapper.SetMealMapper;
+import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.CategoryService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -33,7 +32,7 @@ public class CategoryServiceImpl implements CategoryService {
     private DishMapper dishMapper;
 
     @Autowired
-    private SetMealMapper setMealMapper;
+    private SetmealMapper setMealMapper;
 
     @Override
     public PageResult pageQuery(CategoryPageQueryDTO categoryPageQueryDTO) {
@@ -73,6 +72,8 @@ public class CategoryServiceImpl implements CategoryService {
 //        category.setCreateTime(LocalDateTime.now());
 //        category.setUpdateTime(LocalDateTime.now());
 //        category.setUpdateUser(BaseContext.getCurrentId());
+        //设置默认状态
+        category.setStatus(StatusConstant.DISABLE);
         //保存
         categoryMapper.insert(category);
     }

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.SetmealMapper">
+    <!--分页查询-->
+    <select id="selectVoPage" resultType="com.sky.vo.SetmealVO">
+        select
+            setmeal.*,
+            category.name categoryName
+        from setmeal,
+             category
+        <where>
+            setmeal.category_id = category.id
+            <if test="setmealPageQueryDTO.name != null">
+                and setmeal.name like concat('%', #{setmealPageQueryDTO.name}, '%')
+            </if>
+            <if test="setmealPageQueryDTO.categoryId != null">
+                and setmeal.category_id = #{setmealPageQueryDTO.categoryId}
+            </if>
+            <if test="setmealPageQueryDTO.status != null">
+                and setmeal.status = #{setmealPageQueryDTO.status}
+            </if>
+        </where>
+        order by setmeal.create_time desc
+    </select>
+
+    <!--根据id查询套餐-->
+    <select id="selectVO" resultType="com.sky.vo.SetmealVO">
+        select
+            setmeal.*,
+            category.name categoryName
+        from setmeal,
+             category
+        where setmeal.category_id = category.id and
+              setmeal.id = #{id}
+    </select>
+</mapper>

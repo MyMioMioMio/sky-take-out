@@ -52,3 +52,4 @@ mybatis-plus:
   configuration:
     #开启驼峰命名,可以自动对应
     map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@TableName("setmeal")
 public class Setmeal implements Serializable {
 
     private static final long serialVersionUID = 1L;
