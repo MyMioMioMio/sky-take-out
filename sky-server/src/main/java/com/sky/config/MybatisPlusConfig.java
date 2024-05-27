@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * mp的设置
+ * 配置类，mp的配置类
  */
 @Configuration
 @MapperScan("com.sky.mapper")
