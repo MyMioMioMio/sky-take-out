@@ -15,4 +15,13 @@
                  #{setmealDish.copies})
             </foreach>
     </insert>
+
+    <!--根据套餐id查询包含的菜品-->
+    <select id="selectDishItemVOListBySetmealId" resultType="com.sky.vo.DishItemVO">
+        select setmeal_dish.name as name, description, image, copies
+        from setmeal_dish, dish
+        where
+            setmeal_id = #{setmealId} and
+            setmeal_dish.dish_id = dish.id
+    </select>
 </mapper>
