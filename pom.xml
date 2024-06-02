@@ -101,6 +101,11 @@
                 <version>${jjwt}</version>
             </dependency>
 
+            <!--
+                阿里云OSS
+                其中包含了httpComponent包
+                所以不用自己导入httpComponent包了
+            -->
             <dependency>
                 <groupId>com.aliyun.oss</groupId>
                 <artifactId>aliyun-sdk-oss</artifactId>

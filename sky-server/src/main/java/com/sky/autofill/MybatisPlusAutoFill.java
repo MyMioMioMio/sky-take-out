@@ -18,17 +18,29 @@ public class MybatisPlusAutoFill implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         log.info("公共字段自动填充:{}", metaObject);
-        metaObject.setValue(AutoFillConstant.CREATE_TIME, LocalDateTime.now());
-        metaObject.setValue(AutoFillConstant.CREATE_USER, BaseContext.getCurrentId());
+        if (metaObject.hasSetter(AutoFillConstant.CREATE_TIME)) {
+            metaObject.setValue(AutoFillConstant.CREATE_TIME, LocalDateTime.now());
+        }
+        if (metaObject.hasSetter(AutoFillConstant.CREATE_USER)) {
+            metaObject.setValue(AutoFillConstant.CREATE_USER, BaseContext.getCurrentId());
+        }
 
-        metaObject.setValue(AutoFillConstant.UPDATE_TIME, LocalDateTime.now());
-        metaObject.setValue(AutoFillConstant.UPDATE_USER, BaseContext.getCurrentId());
+        if (metaObject.hasSetter(AutoFillConstant.UPDATE_TIME)) {
+            metaObject.setValue(AutoFillConstant.UPDATE_TIME, LocalDateTime.now());
+        }
+        if (metaObject.hasSetter(AutoFillConstant.UPDATE_USER)) {
+            metaObject.setValue(AutoFillConstant.UPDATE_USER, BaseContext.getCurrentId());
+        }
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
         log.info("公共字段自动填充:{}", metaObject);
-        metaObject.setValue(AutoFillConstant.UPDATE_TIME, LocalDateTime.now());
-        metaObject.setValue(AutoFillConstant.UPDATE_USER, BaseContext.getCurrentId());
+        if (metaObject.hasSetter(AutoFillConstant.UPDATE_TIME)) {
+            metaObject.setValue(AutoFillConstant.UPDATE_TIME, LocalDateTime.now());
+        }
+        if (metaObject.hasSetter(AutoFillConstant.UPDATE_USER)) {
+            metaObject.setValue(AutoFillConstant.UPDATE_USER, BaseContext.getCurrentId());
+        }
     }
 }
