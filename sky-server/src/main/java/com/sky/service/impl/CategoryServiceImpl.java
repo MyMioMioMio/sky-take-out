@@ -110,7 +110,7 @@ public class CategoryServiceImpl implements CategoryService {
     public List<Category> selectList(Integer type) {
         //封装条件
         LambdaQueryWrapper<Category> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Category::getType, type);
+        wrapper.eq(type != null, Category::getType, type);
         //查询
         return categoryMapper.selectList(wrapper);
     }
