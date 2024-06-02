@@ -23,6 +23,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -143,5 +144,25 @@ public class DishServiceImpl implements DishService {
     public List<Dish> getByCategoryId(Long categoryId) {
         //查询
         return dishMapper.selectList(new LambdaQueryWrapper<Dish>().eq(Dish::getCategoryId, categoryId));
+    }
+
+    @Override
+    public List<DishVO> getDishVOListById(Long categoryId) {
+        //获得dishList集合
+        List<Dish> dishList = dishMapper.selectList(new LambdaQueryWrapper<Dish>().eq(Dish::getCategoryId, categoryId));
+        //创建dishVOList集合
+        List<DishVO> dishVOList = new ArrayList<>();
+        //为每一个dish封装flavorList
+        dishList.forEach(dish -> {
+            //根据dishId查询flavors
+            List<DishFlavor> flavors = dishFlavorMapper.selectList(new LambdaQueryWrapper<DishFlavor>().eq(DishFlavor::getDishId, dish.getId()));
+            //封装数据
+            DishVO dishVO = new DishVO();
+            BeanUtils.copyProperties(dish, dishVO);
+            dishVO.setFlavors(flavors);
+            dishVOList.add(dishVO);
+        });
+        //返回dishVOList
+        return dishVOList;
     }
 }
