@@ -1,5 +1,7 @@
 package com.sky.controller.user;
 
+import com.sky.constant.StatusConstant;
+import com.sky.entity.Dish;
 import com.sky.result.Result;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
@@ -31,7 +33,13 @@ public class DishController {
     @ApiOperation("根据分类id查询菜品")
     public Result<List<DishVO>> getListById(Long categoryId) {
         log.info("根据分类id查询菜品:{}", categoryId);
-        List<DishVO> dishVOList = dishService.getDishVOListById(categoryId);
+        //封装dish条件,仅查询启售中的
+        Dish dishD = Dish.builder()
+                .categoryId(categoryId)
+                .status(StatusConstant.ENABLE)
+                .build();
+
+        List<DishVO> dishVOList = dishService.getDishVOListByCategoryId(dishD);
         return Result.success(dishVOList);
     }
 }

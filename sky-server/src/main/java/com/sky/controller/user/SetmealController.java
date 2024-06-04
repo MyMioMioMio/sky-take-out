@@ -1,6 +1,8 @@
 package com.sky.controller.user;
 
 
+import com.sky.constant.StatusConstant;
+import com.sky.entity.Category;
 import com.sky.entity.Setmeal;
 import com.sky.result.Result;
 import com.sky.service.SetmealService;
@@ -27,18 +29,25 @@ public class SetmealController {
 
     /**
      * 根据分类id查询套餐
+     *
      * @return
      */
     @GetMapping("/list")
     @ApiOperation("根据分类id查询套餐")
     public Result<List<Setmeal>> getList(Long categoryId) {
         log.info("根据分类id查询套餐:{}", categoryId);
-        List<Setmeal> setmealList = setmealService.getSetmealList(categoryId);
+        //封装套餐，仅查询启售套餐
+        Setmeal setmealD = Setmeal.builder()
+                .categoryId(categoryId)
+                .status(StatusConstant.ENABLE)
+                .build();
+        List<Setmeal> setmealList = setmealService.getSetmealList(setmealD);
         return Result.success(setmealList);
     }
 
     /**
      * 根据套餐id查询包含的菜品
+     *
      * @param id
      * @return
      */
@@ -46,6 +55,7 @@ public class SetmealController {
     @ApiOperation("根据套餐id查询包含的菜品")
     public Result<List<DishItemVO>> getDish(@PathVariable("id") Long id) {
         log.info("根据套餐id查询包含的菜品:{}", id);
+        //封装条件
         List<DishItemVO> dishItemVOList = setmealService.getDishItemVOListBySetmealId(id);
         return Result.success(dishItemVOList);
     }

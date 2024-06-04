@@ -18,6 +18,7 @@ import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
 import com.sky.result.PageResult;
 import com.sky.service.DishService;
+import com.sky.service.SetmealService;
 import com.sky.vo.DishVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,9 @@ public class DishServiceImpl implements DishService {
 
     @Autowired
     private CategoryMapper categoryMapper;
+
+    @Autowired
+    private SetmealService setmealService;
 
     @Override
     public void addDish(DishDTO dishDTO) {
@@ -71,6 +75,16 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public void changStatus(Integer status, Long id) {
+        //如果执行停售操作，则包含此菜品的套餐也需要停售
+        if (status.intValue() == StatusConstant.DISABLE) {
+            //根据菜品id查询套餐-菜品
+            List<SetmealDish> setmealDishes = setmealDishMapper.selectList(new LambdaQueryWrapper<SetmealDish>().eq(SetmealDish::getDishId, id));
+            //遍历更改套餐状态为停售
+            setmealDishes.forEach(setmealDish -> {
+                setmealService.changeStatus(StatusConstant.DISABLE, setmealDish.getSetmealId());
+            });
+        }
+
         //封装数据
         Dish dish = Dish.builder()
                 .id(id)
@@ -147,9 +161,13 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
-    public List<DishVO> getDishVOListById(Long categoryId) {
+    public List<DishVO> getDishVOListByCategoryId(Dish dishD) {
         //获得dishList集合
-        List<Dish> dishList = dishMapper.selectList(new LambdaQueryWrapper<Dish>().eq(Dish::getCategoryId, categoryId));
+        List<Dish> dishList = dishMapper.selectList(
+                new LambdaQueryWrapper<Dish>()
+                        .eq(Dish::getCategoryId, dishD.getCategoryId())
+                        .eq(Dish::getStatus, dishD.getStatus())
+        );
         //创建dishVOList集合
         List<DishVO> dishVOList = new ArrayList<>();
         //为每一个dish封装flavorList

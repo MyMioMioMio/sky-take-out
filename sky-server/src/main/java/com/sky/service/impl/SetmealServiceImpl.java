@@ -18,7 +18,6 @@ import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.SetmealService;
 import com.sky.vo.DishItemVO;
-import com.sky.vo.SetmealOverViewVO;
 import com.sky.vo.SetmealVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,8 +141,13 @@ public class SetmealServiceImpl implements SetmealService {
     }
 
     @Override
-    public List<Setmeal> getSetmealList(Long categoryId) {
-        return setMealMapper.selectList(new LambdaQueryWrapper<Setmeal>().eq(Setmeal::getCategoryId, categoryId));
+    public List<Setmeal> getSetmealList(Setmeal setmealD) {
+        //仅查询启售中的套餐
+        return setMealMapper.selectList(
+                new LambdaQueryWrapper<Setmeal>()
+                        .eq(Setmeal::getCategoryId, setmealD.getCategoryId())
+                        .eq(Setmeal::getStatus, setmealD.getStatus())
+        );
     }
 
     @Override
