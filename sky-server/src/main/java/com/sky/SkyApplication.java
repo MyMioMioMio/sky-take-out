@@ -3,10 +3,12 @@ package com.sky;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableTransactionManagement //开启注解方式的事务管理
+@EnableCaching //开启缓存注解功能
 @Slf4j
 public class SkyApplication {
     public static void main(String[] args) {
@@ -14,3 +16,15 @@ public class SkyApplication {
         log.info("server started");
     }
 }
+
+
+//Spring Cache
+//常用注解:
+//@EnableCaching 开启缓存注解功能，通常加在启动类上
+//@Cacheable 在方法执行前先查询缓存中是否有数据，如果有数据，则直接返回缓存数据;如果没有缓存数据，调用方法并将方法返回值放到缓存中
+//@CachePut 将方法的返回值放到缓存中
+//@CacheEvict 将一条或多条数据从缓存中删除
+
+
+
+

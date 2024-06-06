@@ -1,5 +1,6 @@
 package com.sky.controller.admin;
 
+import com.sky.constant.CacheConstant;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
@@ -11,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +32,7 @@ public class DishController {
      */
     @PostMapping
     @ApiOperation("新增菜品")
+    @CacheEvict(cacheNames = CacheConstant.CACHE_KEY_DISH_PREFIX, key = "#dishDTO.categoryId")
     public Result save(@RequestBody DishDTO dishDTO) {
         log.info("新增菜品:{}", dishDTO);
         dishService.addDish(dishDTO);
@@ -55,6 +58,7 @@ public class DishController {
      */
     @PostMapping("/status/{status}")
     @ApiOperation("菜品起售、停售")
+    @CacheEvict(cacheNames = CacheConstant.CACHE_KEY_DISH_PREFIX, allEntries = true)
     public Result changStatus(@PathVariable("status") Integer status, Long id) {
         log.info("菜品起售、停售:{},{}", status, id);
         dishService.changStatus(status, id);
@@ -68,6 +72,7 @@ public class DishController {
      */
     @DeleteMapping
     @ApiOperation("批量删除菜品")
+    @CacheEvict(cacheNames = CacheConstant.CACHE_KEY_DISH_PREFIX, allEntries = true)
     public Result delete(@RequestParam List<Long> ids) {
         log.info("批量删除菜品:{}", ids);
         dishService.delete(ids);
@@ -93,6 +98,7 @@ public class DishController {
      */
     @PutMapping
     @ApiOperation("修改菜品")
+    @CacheEvict(cacheNames = CacheConstant.CACHE_KEY_DISH_PREFIX, allEntries = true)
     public Result updateDish(@RequestBody DishDTO dishDTO) {
         log.info("修改菜品:{}", dishDTO);
         dishService.updateDish(dishDTO);

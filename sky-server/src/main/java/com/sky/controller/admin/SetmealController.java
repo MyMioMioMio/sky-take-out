@@ -1,5 +1,6 @@
 package com.sky.controller.admin;
 
+import com.sky.constant.CacheConstant;
 import com.sky.dto.SetmealDTO;
 import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.result.PageResult;
@@ -10,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,6 +43,7 @@ public class SetmealController {
      */
     @PostMapping
     @ApiOperation("新增套餐")
+    @CacheEvict(cacheNames = CacheConstant.CACHE_KEY_MEAL_PREFIX, key = "#setmealDTO.categoryId") //从redis清除指定缓存
     public Result save(@RequestBody SetmealDTO setmealDTO) {
         log.info("新增套餐:{}", setmealDTO);
         setmealService.save(setmealDTO);
@@ -53,6 +56,7 @@ public class SetmealController {
      */
     @PostMapping("/status/{status}")
     @ApiOperation("套餐起售、停售")
+    @CacheEvict(cacheNames = CacheConstant.CACHE_KEY_MEAL_PREFIX, allEntries = true) //从redis清除全部setmeal缓存
     public Result changeStatus(@PathVariable("status") Integer status, Long id) {
         log.info("套餐起售、停售:{},{}", status, id);
         setmealService.changeStatus(status, id);
@@ -65,6 +69,7 @@ public class SetmealController {
      */
     @DeleteMapping
     @ApiOperation("批量删除套餐")
+    @CacheEvict(cacheNames = CacheConstant.CACHE_KEY_MEAL_PREFIX, allEntries = true)
     public Result deleteBeth(@RequestParam List<Long> ids) {
         log.info("批量删除套餐:{}", ids);
         setmealService.deleteBeth(ids);
@@ -78,6 +83,7 @@ public class SetmealController {
      */
     @PutMapping
     @ApiOperation("修改套餐")
+    @CacheEvict(cacheNames = CacheConstant.CACHE_KEY_MEAL_PREFIX, allEntries = true)
     public Result updateSetmeal(@RequestBody SetmealDTO setmealDTO) {
         log.info("修改套餐:{}", setmealDTO);
         setmealService.update(setmealDTO);
