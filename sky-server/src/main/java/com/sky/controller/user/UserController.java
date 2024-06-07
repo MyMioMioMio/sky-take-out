@@ -31,7 +31,7 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    JwtProperties jwtProperties;
+    private JwtProperties jwtProperties;
 
     /**
      * 登录
