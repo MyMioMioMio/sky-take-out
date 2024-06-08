@@ -57,4 +57,16 @@ public class ShoppingCartController {
         shoppingCartService.deleteAllByUserId(BaseContext.getCurrentId());
         return Result.success();
     }
+
+    /**
+     * 删除购物车中一个商品
+     * @return
+     */
+    @PostMapping("/sub")
+    @ApiOperation("删除购物车中一个商品")
+    public Result deleteOne(@RequestBody ShoppingCartDTO shoppingCartDTO) {
+        log.info("删除购物车中一个商品,商品信息:{}", shoppingCartDTO);
+        shoppingCartService.deleteOne(shoppingCartDTO);
+        return Result.success();
+    }
 }

@@ -28,4 +28,10 @@ public interface ShoppingCartService {
      * @param userId
      */
     void deleteAllByUserId(Long userId);
+
+    /**
+     * 删除购物车中一个商品
+     * @param shoppingCartDTO
+     */
+    void deleteOne(ShoppingCartDTO shoppingCartDTO);
 }

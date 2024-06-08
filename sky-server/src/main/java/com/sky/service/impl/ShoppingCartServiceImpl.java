@@ -79,4 +79,23 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public void deleteAllByUserId(Long userId) {
         shoppingCartMapper.delete(new LambdaQueryWrapper<ShoppingCart>().eq(ShoppingCart::getUserId, userId));
     }
+
+    @Override
+    public void deleteOne(ShoppingCartDTO shoppingCartDTO) {
+        //查询购物车商品信息
+        ShoppingCart shoppingCart = shoppingCartMapper.selectOne(
+                new LambdaQueryWrapper<ShoppingCart>()
+                        .eq(shoppingCartDTO.getDishId() != null, ShoppingCart::getDishId, shoppingCartDTO.getDishId())
+                        .eq(shoppingCartDTO.getDishFlavor() != null, ShoppingCart::getDishFlavor, shoppingCartDTO.getDishFlavor())
+                        .eq(shoppingCartDTO.getSetmealId() != null, ShoppingCart::getSetmealId, shoppingCartDTO.getSetmealId())
+        );
+        //数量减一
+        shoppingCart.setNumber(shoppingCart.getNumber() - 1);
+        //数量为零则删除，否则更新数据
+        if (shoppingCart.getNumber() == 0) {
+            shoppingCartMapper.deleteById(shoppingCart.getId());
+        } else {
+            shoppingCartMapper.updateById(shoppingCart);
+        }
+    }
 }
