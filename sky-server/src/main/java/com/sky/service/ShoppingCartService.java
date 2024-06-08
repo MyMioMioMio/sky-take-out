@@ -22,4 +22,10 @@ public interface ShoppingCartService {
      * @return
      */
     List<ShoppingCart> getListByUserId(Long userId);
+
+    /**
+     * 清空购物车
+     * @param userId
+     */
+    void deleteAllByUserId(Long userId);
 }

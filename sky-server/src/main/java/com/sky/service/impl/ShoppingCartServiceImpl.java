@@ -74,4 +74,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public List<ShoppingCart> getListByUserId(Long userId) {
         return shoppingCartMapper.selectList(new LambdaQueryWrapper<ShoppingCart>().eq(ShoppingCart::getUserId, userId));
     }
+
+    @Override
+    public void deleteAllByUserId(Long userId) {
+        shoppingCartMapper.delete(new LambdaQueryWrapper<ShoppingCart>().eq(ShoppingCart::getUserId, userId));
+    }
 }
