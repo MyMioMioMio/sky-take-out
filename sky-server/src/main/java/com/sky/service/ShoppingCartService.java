@@ -1,7 +1,10 @@
 package com.sky.service;
 
 import com.sky.dto.ShoppingCartDTO;
+import com.sky.entity.ShoppingCart;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Transactional
 public interface ShoppingCartService {
@@ -12,4 +15,11 @@ public interface ShoppingCartService {
      * @param shoppingCartDTO
      */
     void add(ShoppingCartDTO shoppingCartDTO);
+
+    /**
+     * 查看购物车
+     * @param userId
+     * @return
+     */
+    List<ShoppingCart> getListByUserId(Long userId);
 }
