@@ -211,8 +211,25 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void cancelOrder(Long id) {
-        //封装id和状态
-        Orders orders = Orders.builder().id(id).status(Orders.CANCELLED).build();
+        //查询订单
+        Orders orderDB = orderMapper.selectById(id);
+        //判断订单是否存在或者是否为已完成状态
+        if (orderDB == null || orderDB.getStatus().intValue() == Orders.COMPLETED) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+        Orders orders = new Orders();
+        orders.setId(id);
+        //订单未付款，则直接取消
+        if (orderDB.getStatus().intValue() == Orders.PENDING_PAYMENT) {
+            orders.setStatus(Orders.CANCELLED);
+        }
+        //订单已付款则取消并退款
+        if (orderDB.getPayStatus().intValue() == Orders.PAID) {
+            orders.setStatus(Orders.CANCELLED);
+            //调用退款方法
+            /*****/
+            orders.setPayStatus(Orders.REFUND);
+        }
         //更新订单状态为已取消
         orderMapper.updateById(orders);
     }
