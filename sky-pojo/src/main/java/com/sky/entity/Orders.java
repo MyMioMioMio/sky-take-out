@@ -37,7 +37,15 @@ public class Orders implements Serializable {
     public static final Integer PAID = 1;
     public static final Integer REFUND = 2;
 
+    public static final String PAYMENT_TIMEOUT = "支付超时，取消订单";
+
     private static final long serialVersionUID = 1L;
+
+    //来单提醒
+    public static final String ORDERS_INCOMING = "1";
+
+    //催单提醒
+    public static final String ORDERS_REMINDER = "2";
 
     @TableId(type = IdType.AUTO)
     private Long id;
