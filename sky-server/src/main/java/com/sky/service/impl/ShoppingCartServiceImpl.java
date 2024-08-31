@@ -40,6 +40,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                         .eq(shoppingCart.getDishId() != null, ShoppingCart::getDishId, shoppingCart.getDishId())
                         .eq(shoppingCart.getDishFlavor() != null, ShoppingCart::getDishFlavor, shoppingCart.getDishFlavor())
                         .eq(shoppingCart.getSetmealId() != null, ShoppingCart::getSetmealId, shoppingCart.getSetmealId())
+                        .eq(ShoppingCart::getUserId, BaseContext.getCurrentId())
         );
         if (shoppingCartGet != null) {
             //已经存在shoppingCart
@@ -88,6 +89,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                         .eq(shoppingCartDTO.getDishId() != null, ShoppingCart::getDishId, shoppingCartDTO.getDishId())
                         .eq(shoppingCartDTO.getDishFlavor() != null, ShoppingCart::getDishFlavor, shoppingCartDTO.getDishFlavor())
                         .eq(shoppingCartDTO.getSetmealId() != null, ShoppingCart::getSetmealId, shoppingCartDTO.getSetmealId())
+                        .eq(ShoppingCart::getUserId, BaseContext.getCurrentId())
         );
         //数量减一
         shoppingCart.setNumber(shoppingCart.getNumber() - 1);

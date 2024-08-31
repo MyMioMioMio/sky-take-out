@@ -77,7 +77,7 @@ public class OrderController {
     }
 
     /**
-     * 取消订单
+     * 用户取消订单
      * @param id 订单id
      * @return
      */
