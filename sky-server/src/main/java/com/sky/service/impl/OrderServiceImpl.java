@@ -24,6 +24,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -88,6 +89,8 @@ public class OrderServiceImpl implements OrderService {
             OrderDetail orderDetail = new OrderDetail();
             BeanUtils.copyProperties(shoppingCart, orderDetail);
             orderDetail.setOrderId(orders.getId());
+            //shoppingCart中的amount是商品单价
+            orderDetail.setAmount(BigDecimal.valueOf((long) shoppingCart.getNumber() * shoppingCart.getAmount().intValue()));
             orderDetails.add(orderDetail);
         });
         orderDetailMapper.insertBatch(orderDetails);

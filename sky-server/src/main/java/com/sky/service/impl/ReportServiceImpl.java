@@ -1,22 +1,26 @@
 package com.sky.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.sky.entity.Orders;
+import com.sky.mapper.OrderDetailMapper;
 import com.sky.mapper.OrderMapper;
 import com.sky.mapper.UserMapper;
 import com.sky.service.ReportService;
+import com.sky.vo.OrderReportVO;
+import com.sky.vo.SalesTop10ReportVO;
 import com.sky.vo.TurnoverReportVO;
 import com.sky.vo.UserReportVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Service
 public class ReportServiceImpl implements ReportService {
@@ -25,6 +29,8 @@ public class ReportServiceImpl implements ReportService {
     private OrderMapper orderMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private OrderDetailMapper orderDetailMapper;
 
 
     @Override
@@ -69,6 +75,77 @@ public class ReportServiceImpl implements ReportService {
                 .dateList(StringUtils.join(dateList, ","))
                 .totalUserList(StringUtils.join(userList, ","))
                 .newUserList(StringUtils.join(newUserList, ","))
+                .build();
+    }
+
+    @Override
+    public OrderReportVO getOrdersStatistics(LocalDate begin, LocalDate end) {
+//        LocalDateTime beginTimeF = LocalDateTime.of(begin, LocalTime.MIN);
+//        LocalDateTime endTimeF = LocalDateTime.of(end, LocalTime.MAX);
+//        //获取订单总数
+//        Long totalOrder = orderMapper.selectCount(new LambdaQueryWrapper<Orders>().ge(Orders::getOrderTime, beginTimeF).le(Orders::getOrderTime, endTimeF));
+//        //获取已完成订单数
+//        Long validOrder = orderMapper.selectCount(new LambdaQueryWrapper<Orders>().ge(Orders::getOrderTime, beginTimeF).le(Orders::getOrderTime, endTimeF).eq(Orders::getStatus, Orders.COMPLETED));
+
+        //时间区间内订单总数
+        AtomicInteger totalOrder = new AtomicInteger();
+        //时间区间内已完成订单数
+        AtomicInteger validOrder = new AtomicInteger();
+        //获取日期列表
+        List<LocalDate> dateList = getLocalDateList(begin, end);
+        //每日订单数列表和每日订单完成数列表
+        List<Integer> orderCountList = new ArrayList<>();
+        List<Integer> validOrderCountList = new ArrayList<>();
+        dateList.forEach(date -> {
+            LocalDateTime beginTime = LocalDateTime.of(date, LocalTime.MIN);
+            LocalDateTime endTime = LocalDateTime.of(date, LocalTime.MAX);
+            //每日订单数
+            Long orderCount = orderMapper.selectCount(new LambdaQueryWrapper<Orders>().ge(Orders::getOrderTime, beginTime).le(Orders::getOrderTime, endTime));
+            orderCountList.add(orderCount.intValue());
+            totalOrder.addAndGet(orderCount.intValue());
+            //每日订单完成数
+            Long validOrderCount = orderMapper.selectCount(new LambdaQueryWrapper<Orders>().ge(Orders::getOrderTime, beginTime).le(Orders::getOrderTime, endTime).eq(Orders::getStatus, Orders.COMPLETED));
+            validOrderCountList.add(validOrderCount.intValue());
+            validOrder.addAndGet(validOrderCount.intValue());
+        });
+
+        //订单完成率
+        Double orderCompletionRate = totalOrder.intValue() == 0 ? 0.0 : validOrder.doubleValue() / totalOrder.doubleValue();
+
+        return OrderReportVO.builder()
+                .dateList(StringUtils.join(dateList, ","))
+                .orderCompletionRate(orderCompletionRate)
+                .orderCountList(StringUtils.join(orderCountList, ","))
+                .validOrderCountList(StringUtils.join(validOrderCountList, ","))
+                .totalOrderCount(totalOrder.intValue())
+                .validOrderCount(validOrder.intValue())
+                .build();
+    }
+
+    @Override
+    public SalesTop10ReportVO getTop10(LocalDate begin, LocalDate end) {
+        //获取完整日期
+        LocalDateTime beginTime = LocalDateTime.of(begin, LocalTime.MIN);
+        LocalDateTime endTime = LocalDateTime.of(end, LocalTime.MAX);
+        //获取日期区间订单的orderId
+        List<Long> orderIdList = orderMapper.selectList(new LambdaQueryWrapper<Orders>().ge(Orders::getOrderTime, beginTime).le(Orders::getOrderTime, endTime).eq(Orders::getStatus, Orders.COMPLETED))
+                .stream()
+                .map(Orders::getId)
+                .collect(Collectors.toList());
+        //top10的商品名称列表和销量列表
+        List<String> nameList = new ArrayList<>();
+        List<Object> sumList = new ArrayList<>();
+        //若orderIdList非空则获取top10的商品销量
+        if (!orderIdList.isEmpty()) {
+            List<Map<String, Object>> top10List =  orderDetailMapper.getSales(orderIdList);
+            for (Map<String, Object> map : top10List) {
+                nameList.add((String) map.get("name"));
+                sumList.add(((BigDecimal) map.get("sum")).intValue());
+            }
+        }
+        return SalesTop10ReportVO.builder()
+                .nameList(StringUtils.join(nameList, ","))
+                .numberList(StringUtils.join(sumList, ","))
                 .build();
     }
 

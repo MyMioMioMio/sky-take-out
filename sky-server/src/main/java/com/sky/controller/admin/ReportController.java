@@ -2,9 +2,7 @@ package com.sky.controller.admin;
 
 import com.sky.result.Result;
 import com.sky.service.ReportService;
-import com.sky.vo.OrderStatisticsVO;
-import com.sky.vo.TurnoverReportVO;
-import com.sky.vo.UserReportVO;
+import com.sky.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +38,13 @@ public class ReportController {
         return Result.success(turnoverReportVO);
     }
 
+    /**
+     * 用户统计接口
+     *
+     * @param begin
+     * @param end
+     * @return
+     */
     @GetMapping("/userStatistics")
     @ApiOperation("用户统计接口")
     public Result<UserReportVO> getUserStatistics(
@@ -48,5 +53,33 @@ public class ReportController {
         log.info("用户统计接口,起始日期{},结束日期{}", begin, end);
         UserReportVO userReportVO = reportService.getUserStatistics(begin, end);
         return Result.success(userReportVO);
+    }
+
+    /**
+     * 订单统计接口
+     *
+     * @param begin
+     * @param end
+     * @return
+     */
+    @GetMapping("/ordersStatistics")
+    @ApiOperation("订单统计接口")
+    public Result<OrderReportVO> getOrdersStatistics(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
+        log.info("订单统计接口,起始日期{},结束日期{}", begin, end);
+        OrderReportVO orderReportVO = reportService.getOrdersStatistics(begin, end);
+        return Result.success(orderReportVO);
+    }
+
+    @GetMapping("/top10")
+    @ApiOperation("查询销量排名top10接口")
+    private Result<SalesTop10ReportVO> getTop10(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
+        log.info("查询销量排名top10接口,起始日期{},结束日期{}", begin, end);
+        SalesTop10ReportVO salesTop10ReportVO = reportService.getTop10(begin, end);
+        int a = 10;
+        return Result.success(salesTop10ReportVO);
     }
 }
