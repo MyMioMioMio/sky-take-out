@@ -1,6 +1,7 @@
 package com.sky.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.sky.dto.GoodsSalesDTO;
 import com.sky.entity.Orders;
 import com.sky.mapper.OrderDetailMapper;
 import com.sky.mapper.OrderMapper;
@@ -137,11 +138,9 @@ public class ReportServiceImpl implements ReportService {
         List<Object> sumList = new ArrayList<>();
         //若orderIdList非空则获取top10的商品销量
         if (!orderIdList.isEmpty()) {
-            List<Map<String, Object>> top10List =  orderDetailMapper.getSales(orderIdList);
-            for (Map<String, Object> map : top10List) {
-                nameList.add((String) map.get("name"));
-                sumList.add(((BigDecimal) map.get("sum")).intValue());
-            }
+            List<GoodsSalesDTO> top10List =  orderDetailMapper.getSales(orderIdList);
+            nameList = top10List.stream().map(GoodsSalesDTO::getName).collect(Collectors.toList());
+            sumList = top10List.stream().map(GoodsSalesDTO::getNumber).collect(Collectors.toList());
         }
         return SalesTop10ReportVO.builder()
                 .nameList(StringUtils.join(nameList, ","))

@@ -18,8 +18,8 @@
             </foreach>
     </insert>
 
-    <select id="getSales" resultType="java.util.Map">
-        select name, sum(number) sum
+    <select id="getSales" resultType="com.sky.dto.GoodsSalesDTO">
+        select name, sum(number) number
         from order_detail
         where
             order_id in
@@ -27,7 +27,7 @@
                 #{orderId}
             </foreach>
         group by name
-        order by sum desc
+        order by number desc
         limit 0, 10
     </select>
 </mapper>

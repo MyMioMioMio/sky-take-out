@@ -1,6 +1,7 @@
 package com.sky.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.sky.dto.GoodsSalesDTO;
 import com.sky.entity.OrderDetail;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
@@ -26,5 +27,5 @@ public interface OrderDetailMapper extends BaseMapper<OrderDetail> {
      * @return
      */
     @MapKey("name")
-    List<Map<String, Object>> getSales(@Param("orderIdList") List<Long> orderIdList);
+    List<GoodsSalesDTO> getSales(@Param("orderIdList") List<Long> orderIdList);
 }
