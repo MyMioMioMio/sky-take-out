@@ -140,7 +140,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void editPassword(PasswordEditDTO passwordEditDTO) {
         //获取用户
-        Employee employee = employeeMapper.selectById(passwordEditDTO.getEmpId());
+        Employee employee = employeeMapper.selectById(BaseContext.getCurrentId());
         //md5加密并密码校验
         String oldPass = DigestUtils.md5DigestAsHex(passwordEditDTO.getOldPassword().getBytes()).toUpperCase();
         if (!oldPass.equals(employee.getPassword())) {

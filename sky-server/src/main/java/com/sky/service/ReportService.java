@@ -6,6 +6,7 @@ import com.sky.vo.TurnoverReportVO;
 import com.sky.vo.UserReportVO;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 
 @Transactional
@@ -41,4 +42,10 @@ public interface ReportService {
      * @return
      */
     SalesTop10ReportVO getTop10(LocalDate begin, LocalDate end);
+
+    /**
+     * 导出Excel报表接口
+     * @param response
+     */
+    void exportExcel(HttpServletResponse response);
 }

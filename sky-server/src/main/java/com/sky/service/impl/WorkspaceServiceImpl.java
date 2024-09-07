@@ -17,9 +17,7 @@ import com.sky.vo.SetmealOverViewVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,10 +37,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private SetmealMapper setmealMapper;
 
     @Override
-    public BusinessDataVO getBusinessData() {
-        //获取当日时间区间
-        LocalDateTime begin = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
-        LocalDateTime end = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+    public BusinessDataVO getBusinessData(LocalDateTime begin, LocalDateTime end) {
 
         HashMap<Object, Object> map = new HashMap<>();
         map.put("begin", begin);
@@ -76,10 +71,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public OrderOverViewVO getOverviewOrders() {
-        //获取当日时间区间
-        LocalDateTime begin = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
-        LocalDateTime end = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+    public OrderOverViewVO getOverviewOrders(LocalDateTime begin, LocalDateTime end) {
 
         HashMap<Object, Object> map = new HashMap<>();
         map.put("begin", begin);
@@ -133,6 +125,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 .sold(sold.intValue())
                 .build();
     }
+
 
     //获取订单数
     Long getOrderCount(Map<Object, Object> map) {

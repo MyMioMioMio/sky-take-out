@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 @RestController
 @RequestMapping("/admin/workspace")
 @Slf4j
@@ -31,7 +35,10 @@ public class WorkspaceController {
     @ApiOperation("查询今日运营数据")
     public Result<BusinessDataVO> getBusinessData() {
         log.info("查询今日运营数据");
-        BusinessDataVO businessDataVO = workspaceService.getBusinessData();
+        //获取当日时间区间
+        LocalDateTime begin = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+        LocalDateTime end = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+        BusinessDataVO businessDataVO = workspaceService.getBusinessData(begin, end);
         return Result.success(businessDataVO);
     }
 
@@ -43,7 +50,10 @@ public class WorkspaceController {
     @ApiOperation("查询订单管理数据")
     public Result<OrderOverViewVO> getOverviewOrders() {
         log.info("查询订单管理数据");
-        OrderOverViewVO orderOverViewVO = workspaceService.getOverviewOrders();
+        //获取当日时间区间
+        LocalDateTime begin = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+        LocalDateTime end = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+        OrderOverViewVO orderOverViewVO = workspaceService.getOverviewOrders(begin, end);
         return Result.success(orderOverViewVO);
     }
 

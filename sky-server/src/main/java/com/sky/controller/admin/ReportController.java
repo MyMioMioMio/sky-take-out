@@ -6,12 +6,14 @@ import com.sky.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 
 @RestController
@@ -72,6 +74,12 @@ public class ReportController {
         return Result.success(orderReportVO);
     }
 
+    /**
+     * 查询销量排名top10接口
+     * @param begin
+     * @param end
+     * @return
+     */
     @GetMapping("/top10")
     @ApiOperation("查询销量排名top10接口")
     private Result<SalesTop10ReportVO> getTop10(
@@ -81,5 +89,17 @@ public class ReportController {
         SalesTop10ReportVO salesTop10ReportVO = reportService.getTop10(begin, end);
         int a = 10;
         return Result.success(salesTop10ReportVO);
+    }
+
+
+    /**
+     * 导出Excel报表接口
+     * @param response
+     */
+    @GetMapping("/export")
+    @ApiOperation("导出Excel报表接口")
+    public void exportExcel(HttpServletResponse response) {
+        log.info("导出Excel报表接口");
+        reportService.exportExcel(response);
     }
 }
